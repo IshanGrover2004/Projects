@@ -68,19 +68,47 @@ void o_turn(){
 }
 
 
-void result(){
-    //later completing it
+string result(){
+    if(board[0]==board[1] && board[1]==board[2]){
+        (board[0]=='X')?(winner="X wins"):(winner="O wins");
+    }
+    else if(board[3]==board[4] && board[3]==board[5]){
+        (board[3]=='X')?(winner="X wins"):(winner="O wins");
+    }
+    else if(board[6]==board[7] && board[6]==board[8]){
+        (board[6]=='X')?(winner="X wins"):(winner="O wins");
+    }
+    else if(board[1]==board[4] && board[1]==board[7]){
+        (board[1]=='X')?(winner="X wins"):(winner="O wins");
+    }
+    else if(board[2]==board[5] && board[2]==board[8]){
+        (board[2]=='X')?(winner="X wins"):(winner="O wins");
+    }
+    else if(board[3]==board[6] && board[3]==board[9]){
+        (board[3]=='X')?(winner="X wins"):(winner="O wins");
+    }
+    else if(board[1]==board[5] && board[1]==board[9]){
+        (board[1]=='X')?(winner="X wins"):(winner="O wins");
+    }
+    else if(board[3]==board[5] && board[3]==board[7]){
+        (board[3]=='X')?(winner="X wins"):(winner="O wins");
+    }
+    else{
+        winner="Draw";
+    }
+    return winner;
 }
 
-int main(){
-    print_board();
-    x_turn();
-    o_turn();
-    x_turn();
-    o_turn();
-    x_turn();
-    o_turn();
 
-    result();
+int main(){
+    // print_board();
+    // x_turn();
+    // o_turn();
+    // x_turn();
+    // o_turn();
+    // x_turn();
+    // o_turn();
+    // cout<<result();
+    // result();
     return 0;
 }
