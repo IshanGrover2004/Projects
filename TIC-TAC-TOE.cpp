@@ -101,6 +101,11 @@ string result(){
 
 
 int main(){
+    cout<<"\n\n\t\t\t  ***********************************\n";
+    cout<<"\t\t\t\tT I C  -- T A C -- T O E\t\t\t\n";
+    cout<<"\t\t\t  ***********************************\n";
+    cout<<"\t\t\t\t     FOR 2 PLAYERS\n\t\t\t";
+    
     // print_board();
     // x_turn();
     // o_turn();
