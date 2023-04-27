@@ -34,7 +34,7 @@ void welcome(){
     cout<<"\n\n\t\t\t\t\t  ***********************************\n";
     cout<<"\t\t\t\t\t\tT I C  -- T A C -- T O E\t\t\t\n";
     cout<<"\t\t\t\t\t  ***********************************\n";
-    cout<<"\t\t\t\t\t\t     FOR 2 PLAYERS\n\t\t\t";
+    cout<<"\t\t\t\t\t\t     FOR 2 PLAYERS\n";
 }
 
 
@@ -140,21 +140,21 @@ void result(){
         cout<<winner<<endl;
     }
     else if(board[0]==board[3] && board[0]==board[6]){
-        (board[3]=='X')?(winner="X wins"):(winner="O wins");
+        (board[0]=='X')?(winner="X wins"):(winner="O wins");
         game=false;
         cout<<winner<<endl;
     }
     else if(board[0]==board[4] && board[0]==board[8]){
-        (board[1]=='X')?(winner="X wins"):(winner="O wins");
+        (board[0]=='X')?(winner="X wins"):(winner="O wins");
         game=false;
         cout<<winner<<endl;
     }
     else if(board[2]==board[4] && board[2]==board[6]){
-        (board[3]=='X')?(winner="X wins"):(winner="O wins");
+        (board[2]=='X')?(winner="X wins"):(winner="O wins");
         game=false;
         cout<<winner<<endl;
     }
-    else if(board[0]='1' && board[1]!='2' && board[2]!='3' && board[3]!='4' && board[4]!='5' && board[5]!='6' && board[6]!='7' && board[7]!='8' && board[8]!='9'){
+    else if(board[0]!='1' && board[1]!='2' && board[2]!='3' && board[3]!='4' && board[4]!='5' && board[5]!='6' && board[6]!='7' && board[7]!='8' && board[8]!='9'){
         game=false;
         winner="Draw";
         cout<<winner<<endl;
@@ -162,8 +162,5 @@ void result(){
     else{
         game=true;
     }
-    
-    if(winner=="X wins" || winner=="O wins" || winner=="Draw"){
-        game=false;
-    }
+
 }
