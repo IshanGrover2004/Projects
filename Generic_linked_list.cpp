@@ -11,7 +11,7 @@ template <typename T> struct Node {
 
   Node() = default;
 
-  Node(T data) {           // Parameterised Constructor taking data input to node
+  Node(T data) { // Parameterised Constructor taking data input to node
     this->data = data;
     this->next = nullptr;
   }
@@ -24,6 +24,10 @@ private:
 
 public:
   LinkedList() { head->next = nullptr; }
+  LinkedList(T data) {
+    head->data = data;
+    head->next = nullptr;
+  }
 
   // Operations or Function needed in linked list
   void push_back(T element);
@@ -41,9 +45,16 @@ public:
 
 // push_back(element) --> push the element in the last node of linked list
 template <typename T> void LinkedList<T>::push_back(T element) {
-  Node<T> *current = new Node<T>;
-  current->data = element;
-  current->next = nullptr;
+  if (head == nullptr) {          // if head is empty then data alloted in head node
+    head = new Node<T>(element);
+  } else {                        // if head is not empty then make a new node current and data gets alloted
+    Node<T> *current = head;
+    while (current->next != nullptr) {
+      current = current->next;
+    }
+    current->next = new Node<T>(element);
+
+  }
 }
 
 // push_front(element) --> push the element in the first node of linked list
@@ -64,8 +75,8 @@ template <typename T> void LinkedList<T>::push_front(T element) {
 template <typename T> void LinkedList<T>::display_all() {
   Node<T> *current = head;
   int count = 1;
-  while (current->next != nullptr) {
-    std::cout << "Elements at Node " << count << "is: " << current->data << std::endl;
+  while (current != nullptr) {
+    std::cout << "Elements at Node " << count << " is: " << current->data << std::endl;
     current = current->next;
     count++;
   }
@@ -73,6 +84,7 @@ template <typename T> void LinkedList<T>::display_all() {
 
 int main() {
   LinkedList<int> list;
+  
   list.push_back(5);
   list.push_back(7);
   list.push_back(8);
