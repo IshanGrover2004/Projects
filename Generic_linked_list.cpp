@@ -33,13 +33,13 @@ public:
   void push_back(T element);                       // Done
   void push_front(T element);                      // Done
   void insert(int position, T element);            // Done
-  T pop_back();                                    // 
-  T pop_front();                                   // 
+  void pop_back();                                 // Done
+  void pop_front();                                // Done
   void remove(T element);                          // 
   T get(int position);                             // Done
   int size();                                      // Done
   bool is_empty();                                 // Done
-  void clear();                                    //
+  void clear();                                    // Done
   void display_all();                              // Done
 };
 
@@ -139,23 +139,61 @@ template<typename T> T LinkedList<T>::get(int position){
 }
 
 // pop_back() --> delete the last node
-template<typename T> T LinkedList::pop_back(){
+template<typename T> void LinkedList<T>::pop_back(){
+  
+  if (head == nullptr) 
+    std::cout << "Empty Linked List" << std::endl;
 
+  else if (this->size() == 1){
+    std::cout << "Data removed: " << head->data << std::endl;
+    delete head;
+    head = nullptr;
+  }
+  else{
+    Node<T> *current = head;
+    Node<T> *prev = nullptr;
+
+    while(current->next != nullptr){
+      prev = current;
+      current = current->next;
+    }
+
+    std::cout << "Data removed: " << current->data << std::endl;
+    delete current;
+    prev->next = nullptr;
+  }
 }
 
 // pop_front() --> delete the first node
-template<typename T> T LinkedList::pop_front(){
-
+template<typename T> void LinkedList<T>::pop_front(){
+  if (head == nullptr)
+    std::cout << "Empty Linked List" << std::endl;
+  
+  else if (head->next == nullptr){
+    std::cout << "Head data removed: " << head->data << std::endl;
+    delete head;
+    head = nullptr;
+  }
+  else{
+    Node<T> *current = head->next;
+    std::cout << "Data removed: " << head->data << std::endl;
+    delete head;
+    head = current;
+  }
 }
 
-// remove(element) --> delete the node have data = element
-template<typename T> void LinkedList::remove(T element){
-
-}
 
 // clear() --> delete all the nodes and clear the linked list
-template<typename T> void LinkedList::clear(){
-
+template<typename T> void LinkedList<T>::clear(){
+  Node<T> *current = head;
+  Node<T> *prev = current;
+  while (current->next != nullptr){
+    prev = current;
+    current = current->next;
+    delete prev;
+  }
+  head = nullptr;
+  std::cout << "All Node deleted successfully..." << std::endl;
 }
 
 // is_empty() --> Is the list empty or not
@@ -193,30 +231,33 @@ int main() {
 
   LinkedList<int> list;
 
-  list.push_back(5);
-  list.push_back(7);
-  list.push_front(8);
-  list.insert(2,0);
+  list.push_back(5);    // 3
+  list.push_back(7);    // 4
+  list.push_front(8);   // 1
+  list.insert(2,0);     // 2
 
-  std::cout << "Element at postion 2 is : " << list.get(2) << std::endl;
+  // list.pop_front();   //removes 8
+  list.display_all();
+
+
+  std::cout << std::endl << "Element at postion 1 : " << list.get(1) << std::endl;
 
   int size = list.size();
   std::cout << "Size: " << size << std::endl;
 
-  std::cout << "List is empty: " << list.is_empty() << std::endl;
+  std::cout << "List is empty: " << list.is_empty() << std::endl << std::endl;
 
-  list.display_all();
 }
 
 
 /*things to add more
      operator overloading in display_all funcn
-     complete funcn - 
-     make pop_back() , pop_front() , remove(T element) , clear()
+     remove(T element) , clear()
 */
 
 /* Doubts
     Why "new Node<T>" at line 69
     why head = new_node at line 71
-    line 41 make 4 funcn of deleting nodes
+    pop_back (T type or void)
+    line 175 should do it or not (head->next = nullptr;) after deleting head
 */
