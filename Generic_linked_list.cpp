@@ -182,6 +182,34 @@ template<typename T> void LinkedList<T>::pop_front(){
   }
 }
 
+// remove(element) --> delete the node have data = element
+template<typename T>
+void LinkedList<T>::remove(T element) {
+  if (head == nullptr) {
+    std::cout << "Empty Linked List" << std::endl;
+  }
+  else if (head->data == element) {
+    std::cout << "Head data removed: " << head->data << std::endl;
+    this->pop_front();
+  }
+  else {
+    Node<T> *prev = head;
+    Node<T> *current = head->next;
+
+    while (current != nullptr) {
+      if (current->data == element) {
+        std::cout << "Data removed: " << current->data << std::endl;
+        prev->next = current->next;
+        delete current;
+        return;
+      }
+      prev = current;
+      current = current->next;
+    }
+    std::cout << "Element not found in the Linked List" << std::endl;
+  }
+}
+
 
 // clear() --> delete all the nodes and clear the linked list
 template<typename T> void LinkedList<T>::clear(){
@@ -237,6 +265,7 @@ int main() {
   list.insert(2,0);     // 2
 
   // list.pop_front();   //removes 8
+  list.remove(7);
   list.display_all();
 
 
