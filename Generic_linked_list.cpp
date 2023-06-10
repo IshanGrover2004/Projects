@@ -1,8 +1,8 @@
 // Created by Ishan Grover on 05-June-2023
-// Generic Linked List --> A Linked Lists which can store data of any data type
-// Eg-: [1,2,3,4,5] or ['a','b','c','d']
+// Generic Linked List --> A Linked Lists which can store data of any data type. Eg-: [1,2,3,4,5] or ['a','b','c','d']
 
 #include <iostream>
+#include <cassert>           // Header file for assert() function for making tests
 
 // For making a Node of a linked list
 template <typename T> struct Node {
@@ -35,7 +35,7 @@ public:
   void insert(int position, T element);            // Done
   void pop_back();                                 // Done
   void pop_front();                                // Done
-  void remove(T element);                          // 
+  void remove(T element);                          // Done
   T get(int position);                             // Done
   int size();                                      // Done
   bool is_empty();                                 // Done
@@ -70,7 +70,6 @@ template <typename T> void LinkedList<T>::push_front(T element) {
     new_node->next = head;                       // new node gets address of head in its next
     head = new_node;              //Doubt????..
 
-    // std::cout << current->data << " " << current->next <<" "<< head << std::endl;
   }
 }
 
@@ -257,25 +256,64 @@ void LinkedList<T>::display_all() {
 int main() {
   std::cout << std::endl;
 
-  LinkedList<int> list;
+  LinkedList<int> list;         // Linked List declaration
+  
+//Tests using assert() function
+// is_empty()
+  assert(list.is_empty() == true);
+  std::cout << "Empty Linked List" << std::endl << std::endl;
+  
+// push_back(element)
+  list.push_back(2);     // 1
+  list.push_back(4);     // 2
+  list.push_back(6);     // 3
+  
+  assert(list.get(1) == 2);
+  assert(list.get(2) == 4);
+  assert(list.get(3) == 6);
+  std::cout << "Successfully executed: push_back()" << std::endl << std::endl;
+  
+// push_front(element)
+  list.push_front(1);
+  list.push_front(3);
+  
+  assert(list.get(2) == 1);
+  assert(list.get(1) == 3);
+  std::cout << "Successfully executed: push_front()" << std::endl << std::endl;
+ 
+// insert(position,element)
+  list.insert(1,9);
+  list.insert(3,10);
 
-  list.push_back(5);    // 3
-  list.push_back(7);    // 4
-  list.push_front(8);   // 1
-  list.insert(2,0);     // 2
+  assert(list.get(1) == 9);
+  assert(list.get(2) == 3);
+  assert(list.get(3) == 10);
+  assert(list.get(6) == 4);
+  std::cout << "Successfully executed: insert()" << std::endl << std::endl;
+  
+// pop_back() & pop_front()
+  list.pop_back();
+  list.pop_front();   // 2 elements removed
+  
+  assert(list.size() == 5);
+  assert(list.get(4) == 2);
+  std::cout << "Successfully executed: pop_back() & pop_front()" << std::endl << std::endl;
 
-  // list.pop_front();   //removes 8
-  list.remove(7);
+// remove(element)
+  list.remove(10);
+  
+  assert(list.get(2) == 1);
+  std::cout << "Successfully executed: remove()" << std::endl << std::endl;
+
   list.display_all();
-
-
-  std::cout << std::endl << "Element at postion 1 : " << list.get(1) << std::endl;
-
-  int size = list.size();
-  std::cout << "Size: " << size << std::endl;
-
-  std::cout << "List is empty: " << list.is_empty() << std::endl << std::endl;
-
+  
+// clear()
+  list.clear();
+  
+  assert(list.is_empty() == true);
+  std::cout << std::endl << "Successfully executed: clear()" << std::endl << std::endl;
+std::cout << "All tests successfully passed" << std::endl;
+  
 }
 
 
