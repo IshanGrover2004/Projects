@@ -319,12 +319,12 @@ std::cout << "All tests successfully passed" << std::endl;
 
 /*things to add more
      operator overloading in display_all funcn
-     remove(T element) , clear()
+     Exception Handling
 */
 
 /* Doubts
     Why "new Node<T>" at line 69
     why head = new_node at line 71
     pop_back (T type or void)
-    line 175 should do it or not (head->next = nullptr;) after deleting head
+    line 180 should do it or not (head->next = nullptr;) after deleting head
 */
