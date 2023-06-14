@@ -9,7 +9,8 @@
 // Created by Ishan Grover on 05-June-2023
 
 #include <iostream>
-#include <cassert>
+#include <cassert>           // Header file for assert() function for making tests
+#include <memory>            // Header file for using smart pointers and access memory
 
 
 // For making a Node template of a linked list
@@ -24,7 +25,7 @@
  */
 template <typename T> struct Node {
   T data;     /**< Data stored in a node. */
-  Node *next;  /**< next is a pointer pointing to the next Node of Linked list. We can access next Node using "this->next" */
+  std::shared_ptr<Node> next;  /**< next is a pointer pointing to the next Node of Linked list. We can access next Node using "this->next" */
 
   /**
    * @brief Default Constructor of Node class.
@@ -64,7 +65,7 @@ template <typename T> struct Node {
  */
 template <typename T> class LinkedList {
 private:
-  Node<T> *head;    /**< head is the first Node of Linked list. */
+  std::shared_ptr<Node<T>> head;    /**< head is the first Node of Linked list. */
 
 public:
 
@@ -133,16 +134,17 @@ public:
  * @param element is data of any data type which we wanted to add in the LAST node of linked list.
  */
 template <typename T> void LinkedList<T>::push_back(T element) {
+
   if (head == nullptr) {        // if head is empty then data alloted in head node
-    head = new Node<T>(element);
+    head = std::make_shared<Node<T>>(element);
 
   } else {              // if head is not empty then make a new node current and data gets alloted
-    Node<T> *current = head;
+    std::shared_ptr<Node<T>> current = head;
 
     while (current->next != nullptr) {
       current = current->next;
     }
-    current->next = new Node<T>(element);
+    current->next = std::make_shared<Node<T>>(element);
   }
 }
 
@@ -173,7 +175,7 @@ template <typename T> void LinkedList<T>::push_front(T element) {
     head->data = element;
     head->next = nullptr;
   } else {
-    Node<T> *new_node = new Node<T>(element);    // Assign the value to new node
+    std::shared_ptr<Node<T>> new_node = std::make_shared<Node<T>>(element);    // Assign the value to new node
     new_node->next = head;                       // new node gets address of head in its next
     head = new_node;              //Doubt????..
   }
@@ -222,33 +224,37 @@ template <typename T> void LinkedList<T>::push_front(T element) {
  * @param element is data of any data type which we wanted to add in any POSITION linked list.
  */
 template<typename T> void LinkedList<T>::insert(int position,T element){
-
-  if (position > this->size()+1 || position <= 0){     
-    std::cout << "Invalid position" << std::endl;
-  }
-  else if (position == 1) {
-    Node<T> *new_node = new Node<T>(element);
-    new_node->next = head;
-    head = new_node;
-  }
-  else if (position == this->size()+1){    // if linked list size = 3 and position = 4 (to add at back)
-    this->push_back(element);
-  }
-  else{
-    Node<T> *current = head;
-    Node<T> *new_node = new Node<T>(element);
-    int count = 1;
-
-    for (int i=1;i <= position;i++){
-      if (count == position-1){
-        auto temp = current->next;
-        current->next = new_node;
-        new_node->next = temp;
-        break;
-      }
-      current = current->next;
-      count++;
+  try{
+    if (position > this->size()+1 || position <= 0){     
+      throw std::invalid_argument("Invalid Position in insert()");
     }
+    else if (position == 1) {
+      std::shared_ptr<Node<T>> new_node = std::make_shared<Node<T>>(element);
+      new_node->next = head;
+      head = new_node;
+    }
+    else if (position == this->size()+1){    // if linked list size = 3 and position = 4 (to add at back)
+      this->push_back(element);
+    }
+    else{
+      std::shared_ptr<Node<T>> current = head;
+      std::shared_ptr<Node<T>> new_node = std::make_shared<Node<T>>(element);
+      int count = 1;
+
+      for (int i=1;i <= position;i++){
+        if (count == position-1){
+          auto temp = current->next;
+          current->next = new_node;
+          new_node->next = temp;
+          break;
+        }
+        current = current->next;
+        count++;
+      }
+    }
+  }
+  catch(int invalid_position){
+    std::cout << "Invalid position: "  << std::endl << std::endl;
   }
 }
 
@@ -279,8 +285,7 @@ template<typename T> void LinkedList<T>::insert(int position,T element){
  * @return @a size It return the size of Linked list or we can say number of node linked together
  */
 template<typename T> int LinkedList<T>::size(){
-  Node<T> *current = new Node<T>;
-  current = head;
+  std::shared_ptr<Node<T>> current = head;
   int size = 0;
 
   if (head != nullptr){
@@ -322,10 +327,10 @@ template<typename T> int LinkedList<T>::size(){
  * @return data of any Node
  */
 template<typename T> T LinkedList<T>::get(int position){
-  Node<T> *current = head;
+  std::shared_ptr<Node<T>> current = head;
   int count = 0;
   if ((position > this->size()) && (position <= 0))
-    return 0;      // Use Exception handling concept later
+    throw std::invalid_argument("Invalid Position in get()");
   
   while(current != nullptr){
     count++;
@@ -334,7 +339,7 @@ template<typename T> T LinkedList<T>::get(int position){
     }
     current = current->next;
   }
-  return 0;
+  throw std::invalid_argument("Invalid Position in get()");
 }
 
 
@@ -374,16 +379,15 @@ template<typename T> T LinkedList<T>::get(int position){
 template<typename T> void LinkedList<T>::pop_back(){
   
   if (head == nullptr) 
-    std::cout << "Empty Linked List" << std::endl;
+    throw std::underflow_error("List is empty. No element is there to pop from back.");
 
   else if (this->size() == 1){
     std::cout << "Data removed: " << head->data << std::endl;
-    delete head;
     head = nullptr;
   }
   else{
-    Node<T> *current = head;
-    Node<T> *prev = nullptr;
+    std::shared_ptr<Node<T>> current = head;
+    std::shared_ptr<Node<T>> prev = nullptr;
 
     while(current->next != nullptr){
       prev = current;
@@ -391,10 +395,11 @@ template<typename T> void LinkedList<T>::pop_back(){
     }
 
     std::cout << "Data removed: " << current->data << std::endl;
-    delete current;
+    current = nullptr;
     prev->next = nullptr;
   }
 }
+
 
 
 /**
@@ -425,17 +430,16 @@ template<typename T> void LinkedList<T>::pop_back(){
  */
 template<typename T> void LinkedList<T>::pop_front(){
   if (head == nullptr)
-    std::cout << "Empty Linked List" << std::endl;
+    throw std::underflow_error("List is empty. No element is there to pop from front.");
   
   else if (head->next == nullptr){
     std::cout << "Head data removed: " << head->data << std::endl;
-    delete head;
     head = nullptr;
   }
   else{
-    Node<T> *current = head->next;
+    std::shared_ptr<Node<T>> current = head->next;
     std::cout << "Data removed: " << head->data << std::endl;
-    delete head;
+    head = nullptr;
     head = current;
   }
 }
@@ -480,21 +484,21 @@ template<typename T> void LinkedList<T>::pop_front(){
  */
 template<typename T> void LinkedList<T>::remove(T element) {
   if (head == nullptr) {
-    std::cout << "Empty Linked List" << std::endl;
+    throw std::underflow_error("List is empty. No element is there to remove.");
   }
   else if (head->data == element) {
     std::cout << "Head data removed: " << head->data << std::endl;
     this->pop_front();
   }
   else {
-    Node<T> *prev = head;
-    Node<T> *current = head->next;
+    std::shared_ptr<Node<T>> prev = head;
+    std::shared_ptr<Node<T>> current = head->next;
 
     while (current != nullptr) {
       if (current->data == element) {
         std::cout << "Data removed: " << current->data << std::endl;
         prev->next = current->next;
-        delete current;
+        current = nullptr;
         return;
       }
       prev = current;
@@ -503,6 +507,7 @@ template<typename T> void LinkedList<T>::remove(T element) {
     std::cout << "Element not found in the Linked List" << std::endl;
   }
 }
+
 
 
 /**
@@ -525,15 +530,19 @@ template<typename T> void LinkedList<T>::remove(T element) {
  *    1. Traverse the Linked list and delete each node.
  */
 template<typename T> void LinkedList<T>::clear(){
-  Node<T> *current = head;
-  Node<T> *prev = current;
-  while (current->next != nullptr){
-    prev = current;
-    current = current->next;
-    delete prev;
+  if (head == nullptr)
+    throw std::underflow_error("List is empty. No element is there to clear.");
+  else{
+    std::shared_ptr<Node<T>> current = head;
+    std::shared_ptr<Node<T>> prev = current;
+    while (current->next != nullptr){
+      prev = current;
+      current = current->next;
+      prev = nullptr;
+    }
+    head = nullptr;
+    std::cout << "All Node deleted successfully..." << std::endl;
   }
-  head = nullptr;
-  std::cout << "All Node deleted successfully..." << std::endl;
 }
 
 /**
@@ -562,7 +571,6 @@ template<typename T> bool LinkedList<T>::is_empty(){
   return is_empty;
 }
 
-// display_all() --> 
 /**
  * @brief Display all elements of linked list.
  * @code {.cpp}
@@ -584,9 +592,8 @@ template<typename T> bool LinkedList<T>::is_empty(){
  * **Logic-:**
  *    1. Traverse the Linked list and print @a element.
  */
-template <typename T>
-void LinkedList<T>::display_all() {
-  Node<T> *current = head;
+template <typename T> void LinkedList<T>::display_all() {
+  std::shared_ptr<Node<T>> current = head;
   int count = 0;
 
   if (head == nullptr) {
@@ -596,8 +603,7 @@ void LinkedList<T>::display_all() {
   else {
     while (current != nullptr) {
       count++;
-      std::cout << "Element at Node " << count << " is: " << current->data
-                << std::endl;
+      std::cout << "Element at Node " << count << " is: " << current->data << std::endl;
       current = current->next;
     }
   }
@@ -616,6 +622,22 @@ int main() {
   std::cout << std::endl;
 
   LinkedList<int> list;         // Linked List declaration
+
+// Exceptional handling
+/*
+  try{
+    list.insert(3,9);         // std::invalid_argument("Invalid Position")
+    list.get(10);             // std::invalid_argument("Invalid Position")
+    list.pop_back();          // std::underflow_error("List is empty")
+    list.pop_front();         // std::underflow_error("List is empty")
+    list.remove(4);           // std::underflow_error("List is empty")
+    list.clear();             // std::underflow_error("List is empty")
+  }
+  catch(std::invalid_argument &error){
+    std::cerr << error.what() << std::endl;
+  }
+  
+*/
   
 //Tests using assert() function
 // is_empty()
@@ -675,35 +697,11 @@ std::cout << "All tests successfully passed" << std::endl;
   
 }
 
-/*
-int main() {
-  std::cout << std::endl;
 
-  LinkedList<int> list;
-
-  list.push_back(5);    // 3
-  list.push_back(7);    // 4
-  list.push_front(8);   // 1
-  list.insert(2,0);     // 2
-
-  // list.pop_front();   //removes 8
-  list.remove(7);
-  list.display_all();
-
-
-  std::cout << std::endl << "Element at postion 1 : " << list.get(1) << std::endl;
-
-  int size = list.size();
-  std::cout << "Size: " << size << std::endl;
-
-  std::cout << "List is empty: " << list.is_empty() << std::endl << std::endl;
-
-}
-*/
 
 /*things to add more
      operator overloading in display_all funcn
-     remove(T element) , clear()
+     add exception handling where needed
 */
 
 /* Doubts
@@ -711,4 +709,5 @@ int main() {
     why head = new_node at line 71
     pop_back (T type or void)
     line 175 should do it or not (head->next = nullptr;) after deleting head
+    327 exception handling not woking in get()
 */
